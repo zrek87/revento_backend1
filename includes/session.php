@@ -14,27 +14,30 @@ if (isset($_SERVER['HTTP_ORIGIN']) && $_SERVER['HTTP_ORIGIN'] === $allowed_origi
     }
 }
 
-// SESSION SETUP
-if (session_status() == PHP_SESSION_NONE) {
-    ini_set('session.gc_maxlifetime', 86400);
-    session_set_cookie_params([
-        'lifetime' => 86400, 
-        'path' => '/',
-        'domain' => '.217.65.145.182.sslip.io',  // <-- KEY: shared root domain
-        'secure' => false,                       // <-- set to true if using HTTPS
-        'httponly' => true,
-        'samesite' => 'Lax'
-    ]);
+// Set cookie parameters BEFORE starting the session
+ini_set('session.gc_maxlifetime', 86400);
+session_set_cookie_params([
+    'lifetime' => 86400,
+    'path' => '/',
+    'domain' => '.217.65.145.182.sslip.io',  // Shared domain for cross-subdomain cookies
+    'secure' => false, // Set to true if using HTTPS
+    'httponly' => true,
+    'samesite' => 'Lax'
+]);
+
+// Start the session
+if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
+// Default session state
 if (!isset($_SESSION['loggedin'])) {
     $_SESSION['loggedin'] = false;
 }
 
-// SESSION TIMEOUT HANDLING
-$timeout_duration = 1800; // 30 mins inactivity
-$absolute_timeout = 28800; // 8 hours max session
+// Session timeout logic
+$timeout_duration = 1800;    // 30 mins inactivity
+$absolute_timeout = 28800;   // 8 hours max session
 
 if (isset($_SESSION['last_activity']) && (time() - $_SESSION['last_activity']) > $timeout_duration) {
     session_unset();
@@ -48,7 +51,7 @@ if (isset($_SESSION['session_start_time']) && (time() - $_SESSION['session_start
     session_start();
 }
 
-// Last activity update
+// Update last activity time
 if ($_SESSION['loggedin']) {
     $_SESSION['last_activity'] = time();
 }
