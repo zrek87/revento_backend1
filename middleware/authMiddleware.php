@@ -2,7 +2,15 @@
 include(__DIR__ . '/../includes/session.php'); 
 include(__DIR__ . '/../includes/functions.php'); 
 
-header("Access-Control-Allow-Origin: http://localhost:3000");
+// Dynamic CORS
+$allowed_origins = [
+    "http://localhost:3000",
+    "http://ckkso0s04080wkgskwkowwso.217.65.145.182.sslip.io"
+];
+
+if (isset($_SERVER['HTTP_ORIGIN']) && in_array($_SERVER['HTTP_ORIGIN'], $allowed_origins)) {
+    header("Access-Control-Allow-Origin: {$_SERVER['HTTP_ORIGIN']}");
+}
 header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type, Authorization");
 header("Access-Control-Allow-Credentials: true");
@@ -13,7 +21,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit;
 }
 
-//Ensure session is active before accessing `$_SESSION`
+// Ensure session is active
 if (session_status() !== PHP_SESSION_ACTIVE) {
     session_start();
 }
@@ -23,10 +31,10 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
     exit;
 }
 
-//Get user details from session
+// Get user details
 $userId = $_SESSION['user_id'];
 $username = $_SESSION['username'];
-$role = $_SESSION['role'] ?? "user"; // Default to "user" if role is missing
+$role = $_SESSION['role'] ?? "user";
 
 if (isset($_GET['adminOnly']) && $_GET['adminOnly'] === "true" && $role !== "admin") {
     sendJsonResponse(false, "Access denied. Admins only.");
