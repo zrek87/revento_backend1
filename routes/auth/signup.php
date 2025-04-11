@@ -3,7 +3,8 @@ include('../../includes/session.php');
 include('../../includes/conn.php');
 include('../../includes/functions.php');
 
-header("Access-Control-Allow-Origin: http://localhost:3000");
+// Static CORS for deployed frontend
+header("Access-Control-Allow-Origin: http://ckkso0s04080wkgskwkowwso.217.65.145.182.sslip.io");
 header("Access-Control-Allow-Methods: POST, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type, Authorization");
 header("Access-Control-Allow-Credentials: true");
@@ -18,14 +19,12 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-
 $data = json_decode(file_get_contents("php://input"), true);
 
 if (!$data || empty($data['fullname']) || empty($data['username']) || empty($data['email']) || empty($data['password'])) {
     sendJsonResponse(false, "All fields are required.");
     exit;
 }
-
 
 $uuidString = generateUUID(); 
 $uuidBinary = pack("H*", str_replace('-', '', strtolower($uuidString)));
@@ -36,14 +35,12 @@ $email = sanitizeInput($data['email']);
 $password = password_hash($data['password'], PASSWORD_DEFAULT);
 $role = "user";
 
-
 if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
     sendJsonResponse(false, "Invalid email format.");
     exit;
 }
 
 try {
-
     $checkStmt = $conn->prepare("SELECT COUNT(*) FROM users WHERE email = :email OR username = :username");
     $checkStmt->execute([':email' => $email, ':username' => $username]);
 
@@ -53,7 +50,6 @@ try {
         exit;
     }
 
-  
     $stmt = $conn->prepare("INSERT INTO users (uuid, fullname, username, email, password, role) 
                             VALUES (:uuid, :fullname, :username, :email, :password, :role)");
 
@@ -65,7 +61,6 @@ try {
         ':password' => $password,
         ':role' => $role
     ])) {
-    
         session_regenerate_id(true);
 
         $_SESSION['user_uuid'] = bin2hex($uuidBinary);
