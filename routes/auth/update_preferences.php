@@ -16,11 +16,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit;
 }
 
+// 🔒 Require login
+if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
+    sendJsonResponse(false, "Access denied. Please log in.");
+    exit;
+}
+
+// 🔒 Use session-based UUID (not from client)
+if (empty($_SESSION['user_uuid'])) {
+    sendJsonResponse(false, "Missing user UUID in session.");
+    exit;
+}
+
+$user_id_binary = pack("H*", $_SESSION['user_uuid']);
+
+// Validate input
 $data = json_decode(file_get_contents("php://input"), true);
 
 if (
     !$data ||
-    empty($data['user_id']) ||
     empty($data['city']) ||
     empty($data['categories']) ||
     empty($data['subcategories'])
@@ -29,7 +43,6 @@ if (
     exit;
 }
 
-$user_id_binary = pack("H*", str_replace('-', '', $data['user_id']));
 $city = sanitizeInput($data['city']);
 $categories = array_slice(array_map('sanitizeInput', $data['categories']), 0, 2);
 $subcategories = array_slice(array_map('sanitizeInput', $data['subcategories']), 0, 2);
