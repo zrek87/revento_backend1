@@ -10,15 +10,13 @@ header("Access-Control-Allow-Headers: Content-Type, Authorization");
 header("Access-Control-Allow-Credentials: true");
 header("Content-Type: application/json");
 
+// Handle preflight
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     http_response_code(200);
     exit;
 }
 
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
-
+// Parse and validate input
 $data = json_decode(file_get_contents("php://input"), true);
 
 if (!$data || empty($data['fullname']) || empty($data['username']) || empty($data['email']) || empty($data['password'])) {
@@ -68,6 +66,29 @@ try {
         $_SESSION['email'] = $email;
         $_SESSION['role'] = $role;
         $_SESSION['loggedin'] = true;
+        $_SESSION['session_start_time'] = time();
+        $_SESSION['last_activity'] = time();
+
+        // Shared domain cookies for middleware & frontend
+        $cookieDomain = ".217.65.145.182.sslip.io";
+
+        setcookie("auth_token", bin2hex(random_bytes(16)), [
+            "expires" => time() + 3600,
+            "path" => "/",
+            "domain" => $cookieDomain,
+            "secure" => false, // Set to true when using HTTPS
+            "httponly" => true,
+            "samesite" => "Lax"
+        ]);
+
+        setcookie("user_role", $role, [
+            "expires" => time() + 3600,
+            "path" => "/",
+            "domain" => $cookieDomain,
+            "secure" => false,
+            "httponly" => false,
+            "samesite" => "Lax"
+        ]);
 
         sendJsonResponse(true, "User registered successfully!", [
             "user_id" => bin2hex($uuidBinary),
