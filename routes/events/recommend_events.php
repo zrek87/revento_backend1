@@ -14,7 +14,7 @@ if (!$user_uuid) {
 }
 
 //Call AI Recommendation API
-$ai_api_url = "http://127.0.0.1:5000/recommend?user_uuid=" . urlencode($user_uuid);
+$ai_api_url = "http://xw4w4ogggwkowwwwg48gkk0k.217.65.145.182.sslip.io/recommend?user_uuid=" . urlencode($user_uuid);
 
 $ch = curl_init();
 curl_setopt($ch, CURLOPT_URL, $ai_api_url);
