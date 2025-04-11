@@ -3,7 +3,8 @@ include('../../includes/session.php');
 include('../../includes/conn.php');
 include('../../includes/functions.php');
 
-header("Access-Control-Allow-Origin: http://localhost:3000");
+// Static CORS for deployed frontend
+header("Access-Control-Allow-Origin: http://ckkso0s04080wkgskwkowwso.217.65.145.182.sslip.io");
 header("Access-Control-Allow-Methods: POST, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type, Authorization");
 header("Access-Control-Allow-Credentials: true");
@@ -28,14 +29,13 @@ if (!isValidEmail($email)) {
     exit;
 }
 
-//Rate Limiting: Prevent Brute Force Attacks
+// Rate Limiting
 $_SESSION['failed_attempts'] = ($_SESSION['failed_attempts'] ?? 0) + 1;
 if ($_SESSION['failed_attempts'] > 5) {
     sendJsonResponse(false, "Too many failed login attempts. Try again later.");
     exit;
 }
 
-//Fetch User Data
 $sql = "SELECT uuid, fullname, username, email, password, role FROM users WHERE email = :email";
 try {
     $stmt = $conn->prepare($sql);
@@ -61,27 +61,28 @@ try {
 
         $auth_token = bin2hex(random_bytes(16));
 
-        //Store Tokens Securely
+        $cookieDomain = "xgwc4g0kssoc4w8sgso0wkw4.217.65.145.182.sslip.io"; // Backend domain
+
+        // Auth token cookie
         setcookie("auth_token", $auth_token, [
             "expires" => time() + 3600,
             "path" => "/",
-            "domain" => "localhost",
-            "secure" => false,
+            "domain" => $cookieDomain,
+            "secure" => false, 
             "httponly" => true,
             "samesite" => "Lax"
         ]);
 
-        //Store user role in a cookie
+        // User role cookie
         setcookie("user_role", $user['role'], [
             "expires" => time() + 3600,
             "path" => "/",
-            "domain" => "localhost",
-            "secure" => false,
+            "domain" => $cookieDomain,
+            "secure" => false, 
             "httponly" => false,
             "samesite" => "Lax"
         ]);
 
-        //Send Response
         sendJsonResponse(true, "Login successful!", [
             "user_uuid" => strtoupper($user_uuid),
             "fullname" => $user['fullname'],
