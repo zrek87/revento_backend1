@@ -20,7 +20,8 @@ if (session_status() == PHP_SESSION_NONE) {
     session_set_cookie_params([
         'lifetime' => 86400, 
         'path' => '/',
-        'secure' => isset($_SERVER['HTTPS']), 
+        'domain' => '.217.65.145.182.sslip.io',  // <-- KEY: shared root domain
+        'secure' => false,                       // <-- set to true if using HTTPS
         'httponly' => true,
         'samesite' => 'Lax'
     ]);
