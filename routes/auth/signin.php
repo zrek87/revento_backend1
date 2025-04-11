@@ -10,11 +10,13 @@ header("Access-Control-Allow-Headers: Content-Type, Authorization");
 header("Access-Control-Allow-Credentials: true");
 header("Content-Type: application/json");
 
+// Handle preflight
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     http_response_code(200);
     exit;
 }
 
+// Parse input
 $data = json_decode(file_get_contents("php://input"), true);
 if (json_last_error() !== JSON_ERROR_NONE || empty($data['email']) || empty($data['password'])) {
     sendJsonResponse(false, "Invalid request. Email and password are required.");
@@ -29,13 +31,14 @@ if (!isValidEmail($email)) {
     exit;
 }
 
-// Rate Limiting
+// Rate limiting
 $_SESSION['failed_attempts'] = ($_SESSION['failed_attempts'] ?? 0) + 1;
 if ($_SESSION['failed_attempts'] > 5) {
     sendJsonResponse(false, "Too many failed login attempts. Try again later.");
     exit;
 }
 
+// Fetch user
 $sql = "SELECT uuid, fullname, username, email, password, role FROM users WHERE email = :email";
 try {
     $stmt = $conn->prepare($sql);
@@ -60,15 +63,14 @@ try {
         error_log("Session Data After Login: " . print_r($_SESSION, true));
 
         $auth_token = bin2hex(random_bytes(16));
-
-        $cookieDomain = "xgwc4g0kssoc4w8sgso0wkw4.217.65.145.182.sslip.io"; // Backend domain
+        $cookieDomain = ".217.65.145.182.sslip.io"; // ✅ Shared root domain for both frontend & backend
 
         // Auth token cookie
         setcookie("auth_token", $auth_token, [
             "expires" => time() + 3600,
             "path" => "/",
             "domain" => $cookieDomain,
-            "secure" => false, 
+            "secure" => false, // ⛔ Set to true when using HTTPS
             "httponly" => true,
             "samesite" => "Lax"
         ]);
@@ -78,11 +80,12 @@ try {
             "expires" => time() + 3600,
             "path" => "/",
             "domain" => $cookieDomain,
-            "secure" => false, 
+            "secure" => false, // ⛔ Set to true when using HTTPS
             "httponly" => false,
             "samesite" => "Lax"
         ]);
 
+        // Return session user info
         sendJsonResponse(true, "Login successful!", [
             "user_uuid" => strtoupper($user_uuid),
             "fullname" => $user['fullname'],
@@ -95,5 +98,5 @@ try {
     }
 } catch (PDOException $e) {
     error_log("Database error: " . $e->getMessage());
+    sendJsonResponse(false, "An unexpected error occurred.");
 }
-?>
