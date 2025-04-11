@@ -1,15 +1,32 @@
 <?php
+require_once "../../includes/session.php";   // ✅ Use session to protect access
 require_once "../../includes/conn.php";
 require_once "../../includes/functions.php";
 
+// CORS setup
+header("Access-Control-Allow-Origin: http://ckkso0s04080wkgskwkowwso.217.65.145.182.sslip.io");
+header("Access-Control-Allow-Credentials: true");
+header("Access-Control-Allow-Methods: GET, OPTIONS");
+header("Access-Control-Allow-Headers: Content-Type");
 header("Content-Type: application/json");
-header("Access-Control-Allow-Origin: *");
-header("Access-Control-Allow-Methods: GET");
 
-$username = $_GET['username'] ?? null;
+// Handle preflight
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    http_response_code(200);
+    exit;
+}
+
+// Require login
+if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
+    sendJsonResponse(false, "Access denied. Please log in.");
+    exit;
+}
+
+// Get username from session, not query param for security
+$username = $_SESSION['username'] ?? null;
 
 if (!$username) {
-    sendJsonResponse(false, "Username is required.");
+    sendJsonResponse(false, "Username is missing from session.");
     exit;
 }
 
@@ -40,6 +57,7 @@ try {
         sendJsonResponse(true, "Booked events retrieved successfully!", ["events" => $events]);
     }
 } catch (PDOException $e) {
-    sendJsonResponse(false, "Database error: " . $e->getMessage());
+    error_log("Database error: " . $e->getMessage());
+    sendJsonResponse(false, "Database error occurred.");
 }
 ?>
