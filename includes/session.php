@@ -19,7 +19,7 @@ ini_set('session.gc_maxlifetime', 86400);
 session_set_cookie_params([
     'lifetime' => 86400,
     'path' => '/',
-    'domain' => '.217.65.145.182.sslip.io',  // Shared domain for cross-subdomain cookies
+    'domain' => '.revento.mhzrek.com',  // Shared domain for cross-subdomain cookies
     'secure' => true, 
     'httponly' => true,
     'samesite' => 'Lax'
