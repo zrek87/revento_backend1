@@ -2,7 +2,7 @@
 include('../../includes/session.php'); // Ensure session starts
 
 // Static CORS
-header("Access-Control-Allow-Origin: http://ckkso0s04080wkgskwkowwso.217.65.145.182.sslip.io");
+header("Access-Control-Allow-Origin: https://revento.mhzrek.com");
 header("Access-Control-Allow-Methods: POST, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type, Authorization");
 header("Access-Control-Allow-Credentials: true");
