@@ -1,6 +1,6 @@
 <?php
 
-$allowed_origin = "https://revento.mhzrek.com/";
+$allowed_origin = "https://revento.mhzrek.com";
 
 if (isset($_SERVER['HTTP_ORIGIN']) && $_SERVER['HTTP_ORIGIN'] === $allowed_origin) {
     header("Access-Control-Allow-Origin: $allowed_origin");
