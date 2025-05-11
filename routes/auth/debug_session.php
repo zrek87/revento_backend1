@@ -1,5 +1,5 @@
 <?php
-header("Access-Control-Allow-Origin: http://ckkso0s04080wkgskwkowwso.217.65.145.182.sslip.io");
+header("Access-Control-Allow-Origin: https://revento.mhzrek.com");
 header("Access-Control-Allow-Credentials: true");
 header("Content-Type: application/json");
 
