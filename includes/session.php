@@ -1,6 +1,6 @@
 <?php
-// CORS HEADERS (adjust frontend URL as needed)
-$allowed_origin = "http://ckkso0s04080wkgskwkowwso.217.65.145.182.sslip.io";
+
+$allowed_origin = "https://revento.mhzrek.com/";
 
 if (isset($_SERVER['HTTP_ORIGIN']) && $_SERVER['HTTP_ORIGIN'] === $allowed_origin) {
     header("Access-Control-Allow-Origin: $allowed_origin");
