@@ -70,7 +70,7 @@ try {
         $_SESSION['last_activity'] = time();
 
         // Shared domain cookies for middleware & frontend
-        $cookieDomain = ".217.65.145.182.sslip.io";
+        $cookieDomain = ".revento.mhzrek.com";
 
         setcookie("auth_token", bin2hex(random_bytes(16)), [
             "expires" => time() + 3600,
