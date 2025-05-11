@@ -5,7 +5,7 @@ include(__DIR__ . '/../includes/functions.php');
 // Dynamic CORS
 $allowed_origins = [
     "http://localhost:3000",
-    "https://revento.mhzrek.com/"
+    "https://revento.mhzrek.com"
 ];
 
 if (isset($_SERVER['HTTP_ORIGIN']) && in_array($_SERVER['HTTP_ORIGIN'], $allowed_origins)) {
