@@ -63,7 +63,7 @@ try {
         error_log("Session Data After Login: " . print_r($_SESSION, true));
 
         $auth_token = bin2hex(random_bytes(16));
-        $cookieDomain = ".217.65.145.182.sslip.io"; // ✅ Shared root domain for both frontend & backend
+        $cookieDomain = ".revento.mhzrek.com"; // ✅ Shared root domain for both frontend & backend
 
         // Auth token cookie
         setcookie("auth_token", $auth_token, [
