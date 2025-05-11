@@ -25,7 +25,7 @@ session_unset();
 session_destroy();
 
 // Expire cookies on the shared domain
-$domain = ".217.65.145.182.sslip.io"; // ✅ shared across frontend and backend
+$domain = ".revento.mhzrek.com"; // ✅ shared across frontend and backend
 setcookie(session_name(), '', time() - 3600, '/', $domain, false, true);
 setcookie("auth_token", '', time() - 3600, '/', $domain, false, true);
 setcookie("user_role", '', time() - 3600, '/', $domain, false, false); // If set earlier
