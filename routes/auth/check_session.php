@@ -5,7 +5,7 @@ ini_set('display_errors', 1);
 // ✅ Dynamic CORS
 $allowed_origins = [
     "http://localhost:3000",
-    "http://ckkso0s04080wkgskwkowwso.217.65.145.182.sslip.io"
+    "https://revento.mhzrek.com"
 ];
 
 if (isset($_SERVER['HTTP_ORIGIN']) && in_array($_SERVER['HTTP_ORIGIN'], $allowed_origins)) {
