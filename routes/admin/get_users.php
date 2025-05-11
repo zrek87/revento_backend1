@@ -4,7 +4,7 @@ include('../../includes/conn.php');
 include('../../includes/functions.php');
 
 // CORS for deployed frontend
-header("Access-Control-Allow-Origin: http://ckkso0s04080wkgskwkowwso.217.65.145.182.sslip.io");
+header("Access-Control-Allow-Origin: https://revento.mhzrek.com");
 header("Access-Control-Allow-Methods: GET, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type, Authorization");
 header("Access-Control-Allow-Credentials: true");
