@@ -70,7 +70,7 @@ try {
             "expires" => time() + 3600,
             "path" => "/",
             "domain" => $cookieDomain,
-            "secure" => false, // ⛔ Set to true when using HTTPS
+            "secure" => true, // ⛔ Set to true when using HTTPS
             "httponly" => true,
             "samesite" => "Lax"
         ]);
@@ -80,7 +80,7 @@ try {
             "expires" => time() + 3600,
             "path" => "/",
             "domain" => $cookieDomain,
-            "secure" => false, // ⛔ Set to true when using HTTPS
+            "secure" => true, // ⛔ Set to true when using HTTPS
             "httponly" => false,
             "samesite" => "Lax"
         ]);
